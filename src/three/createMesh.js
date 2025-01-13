@@ -5,6 +5,8 @@ import { OBJLoader } from "three/examples/jsm/loaders/OBJLoader";
 import { MTLLoader } from "three/examples/jsm/loaders/MTLLoader";
 import ElementTag from "./tool/ElementTag"; // Import the ElementTag class
 import { Water } from "three/examples/jsm/objects/Water2";
+import composers from "./composer"
+const { composer, outLinePass } = composers
 class createMesh {
   constructor() {
     this.mainModel = null;
@@ -12,24 +14,24 @@ class createMesh {
 
     this.mainModelTags = [];
 
-    this.waterGroups = []
+    this.waterGroups = [];
 
     this.addLights()
 
-    this.loadModel('./model/wumuObj/石桥铺.mtl', './model/wumuObj/石桥铺.obj', this.mainModel, (e) => {
+    this.loadModel('./model/wumuObj/石桥铺.mtl', './model/wumuObj/无标题.obj', this.mainModel, (e) => {
       this.mainModel = e
       this.mainModel.scale.set(0.02, 0.02, 0.02);
       this.renderDeviceStauts(e);
       this.hideMainModelTags()
-      this.addWater()
-      let test = scene.getObjectByName('Material__1134')
-      console.log(test, "test");
+      this.addWater();
+
     })
     this.loadModel('./model/zaixianjifangObj/在线机房.mtl', './model/zaixianjifangObj/在线机房.obj', this.sonModel, (e) => {
       this.sonModel = e;
       this.sonModel.scale.set(0.2, 0.2, 0.2);
       this.sonModel.visible = false;
     })
+
   }
 
   addLights() {
@@ -39,37 +41,78 @@ class createMesh {
     scene.add(hemisphereLight);
   }
 
+  addOutLine(modelName = this.mainModel) {
+    // 辉光
+    let test2 = modelName.getObjectByName('test2')
+    outLinePass.selectedObjects.push(test2)
+
+
+
+  }
+
+  removeOutLine() {
+    outLinePass.selectedObjects = []
+  }
+
   // 加载设备状态
   renderDeviceStauts(modelName = this.mainModel) {
+
+
+
     modelName.traverse((child) => {
       if (child.isMesh) {
-        if (child.material.name === 'Material__1134') {
-          child.material = new THREE.MeshBasicMaterial({ color: new THREE.Color('red') });
+
+        if (child.material.name === 'Material__809') {//Material__1134
+          child.material = new THREE.MeshBasicMaterial({
+            color: 0x00beff,
+            transparent: true,
+            opacity: .1,
+            //开启线框
+            wireframe: true
+          })
           const elementTag = new ElementTag(child);
           this.mainModelTags.push(elementTag.getCSS2DObject());
           modelName.add(elementTag.getCSS2DObject());
 
+
+
         }
+        modelName.traverse((child) => {
+          if (child.isMesh) {
+            if (child.name == 'mixer') {
+              const material = new THREE.MeshStandardMaterial({ color: 0x00ff00 });
+              child.material = material
+            }
+            if (child.material.name === 'Material__1134') {//Material__1134
+              const material = new THREE.MeshStandardMaterial({ color: 0x00ff00 });
+              child.material = material
+            }
+          }
+        });
+
       }
     });
+
+
   }
 
   addWater() {
     // 创建水面 
     const waterGeometry = new THREE.PlaneGeometry(14, 8);
     const water = new Water(waterGeometry, {
-      textureWidth: 512,
-      textureHeight: 512,
+      // textureWidth: 512,
+      // textureHeight: 512,
       waterNormals: new THREE.TextureLoader().load(
-        '/textures/water/Water_1_M_Normal.jpg',
+        '/textures/water/test.jpg',
         function (texture) {
           texture.wrapS = texture.wrapT = THREE.RepeatWrapping
         }
       ),
       sunDirection: new THREE.Vector3(),
       sunColor: 0xffffff,
-      waterColor: 0x001e0f,
-      distortionScale: 3.7,
+      waterColor: 0x7f5e4c,
+      color: 0xffffff,
+      distortionScale: 5,
       fog: scene.fog !== undefined,
     })
     water.rotation.x = -Math.PI / 2;
@@ -77,7 +120,6 @@ class createMesh {
     this.waterGroups.push(water)
     scene.add(water);
   }
-
 
   loadModel(mtlSrc = './model/wumuObj/石桥铺.mtl', objSrc = './model/wumuObj/石桥铺.obj', modelName = this.mainModel, callback) {
     const mtlLoader = new MTLLoader();
@@ -102,7 +144,7 @@ class createMesh {
         (xhr) => {
           // 计算进度并输出
           const progress = (xhr.loaded / xhr.total) * 100;
-          console.log(`模型加载进度: ${progress.toFixed(2)}%`, mtlSrc);
+          // console.log(`模型加载进度: ${progress.toFixed(2)}%`, mtlSrc);
         },
         (error) => {
           console.error('加载模型时出错:', error, mtlSrc);
@@ -111,22 +153,7 @@ class createMesh {
     });
   }
 
-  // loadModel(mtlSrc = './model/wumuObj/石桥铺.mtl', objSrc = './model/wumuObj/石桥铺.obj', modelName = this.mainModel, callback) {
-  //   const mtlLoader = new MTLLoader();
-  //   mtlLoader.load(mtlSrc, (materials) => {
-  //     materials.preload();
-  //     const objLoader = new OBJLoader();
-  //     objLoader.setMaterials(materials);
-  //     objLoader.load(objSrc, (e) => {
-  //       e.position.set(0, 0, 0);
-  //       scene.add(e);
-  //       // 调用回调函数
-  //       if (callback && typeof callback === 'function') {
-  //         callback(e);
-  //       }
-  //     });
-  //   });
-  // }
+
 
   showMainModel() {
     this.mainModel.visible = true

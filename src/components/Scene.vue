@@ -115,13 +115,53 @@ eventHub.on('changeView', (e) => {
   }
 });
 
+// 排水充水模拟
+eventHub.on('waterSimulation', (e) => {
+  gsap.to(camera.position, {
+    x: 0,
+    y: 10,
+    z: 10,
+    duration: 0.5,
+    onUpdate: () => {
+    }
+  });
+  let y = e.type ? 0.2 : 2
+  gsap.to(createmesh.waterGroups[0].position, {
+    x: 1,
+    y: y,
+    z: 4,
+    duration: 5,
+    onUpdate: () => {
+    }
+  });
 
+})
+
+eventHub.on('waterPollution', (e) => {
+  gsap.to(camera.position, {
+    x: 0,
+    y: 10,
+    z: 10,
+    duration: 0.5,
+    onUpdate: () => {
+    }
+  });
+  const targetColor = e.type ? new THREE.Color(0xd08d1b) : new THREE.Color(0xffffff);
+  gsap.to(createmesh.waterGroups[0].material.uniforms.color.value, {
+    r: targetColor.r,
+    g: targetColor.g,
+    b: targetColor.b,
+    duration: 3, // 动画持续时间
+    onUpdate: () => {
+      createmesh.waterGroups[0].material.needsUpdate = true; // 需要更新材质
+    }
+  });
+})
 eventHub.on('togglePanel', (e) => {
   if (e.type) {
     createmesh.showMainModelTags();
   } else {
     createmesh.hideMainModelTags();
-
   }
 })
 
@@ -130,36 +170,15 @@ onMounted(() => {
   sceneDiv.value.appendChild(css3drender.domElement);
   animate();
 });
-const eventListMesh = [];
-let mapFn = {
-  火警: (position, i) => {
-    const lightWall = new LightWall(1, 2, position);
-    lightWall.eventListIndex = i;
-    // scene.add(lightWall.mesh);
-    // eventListMesh.push(lightWall);
-  },
-  治安: (position, i) => {
-    //   生成随机颜色
-    const color = new THREE.Color(
-      Math.random(),
-      Math.random(),
-      Math.random()
-    ).getHex();
-    // 添加着色器飞线
-    const flyLineShader = new FlyLineShader(position, color);
-    flyLineShader.eventListIndex = i;
-    // scene.add(flyLineShader.mesh);
-    // eventListMesh.push(flyLineShader);
-  },
-  电力: (position, i) => {
-    // 添加雷达
-    const lightRadar = new LightRadar(2, position);
-    lightRadar.eventListIndex = i;
-    // scene.add(lightRadar.mesh);
-    // eventListMesh.push(lightRadar);
-  },
-};
 
+eventHub.on('highLightModel', (e) => {
+  if (!e.type) {
+    createmesh.removeOutLine()
+  } else {
+    createmesh.addOutLine()
+  }
+
+})
 eventHub.on("eventToggle", (i) => {
   eventListMesh.forEach((item) => {
     if (item.eventListIndex === i) {
@@ -182,32 +201,7 @@ eventHub.on("eventToggle", (i) => {
   });
 });
 
-watch(
-  () => props.eventList,
-  (val) => {
-    // console.log(val);
-    eventListMesh.forEach((item) => {
-      item.remove();
-    });
-    props.eventList.forEach((item, i) => {
-      const position = {
-        x: item.position.x / 5 - 10,
-        z: item.position.y / 5 - 10,
-      };
-      const alarmSprite = new AlarmSprite(item.name, position);
-      alarmSprite.onClick(() => {
-        // console.log(item.name, i);
-        eventHub.emit("spriteClick", { event: item, i });
-      });
-      alarmSprite.eventListIndex = i;
-      eventListMesh.push(alarmSprite);
-      // scene.add(alarmSprite.mesh);
-      if (mapFn[item.name]) {
-        mapFn[item.name](position, i);
-      }
-    });
-  }
-);
+
 </script>
 
 <style>

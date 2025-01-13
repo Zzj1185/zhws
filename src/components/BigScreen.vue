@@ -21,6 +21,14 @@
             </div>
             <div @click="togglePanel" class="changeView">{{ tagFlag ? '隐藏数据' : '显示数据' }}</div>
             <!-- <div @click="inspection" class="changeView">人物巡检</div> -->
+            <div @click="highLightModel" class="changeView">{{ outLineFlag ? '取消报警' : '报警模拟' }}</div>
+            <div @click="waterSimulation" class="changeView">
+              {{ waterFlag ? '充水模拟' : '排水模拟' }}
+            </div>
+            <div @click="waterPollution" class="changeView">
+              {{ waterPollutionFlag ? '水净化模拟' : '水污染模拟' }}
+            </div>
+
           </template>
           <template v-else>
             <div class="changeView" @click="backToMainModel()">
@@ -28,11 +36,6 @@
             </div>
           </template>
         </div>
-
-
-
-
-
       </div>
       <div class="right" ref="rightRef">
 
@@ -58,11 +61,8 @@ const backToMainModel = () => {
 eventHub.on('dblClickModel', (msg) => {
   if (!msg) {
     mainModelFlag.value = false
-
   } else {
     mainModelFlag.value = true
-
-
   }
 })
 
@@ -77,7 +77,30 @@ const togglePanel = () => {
   tagFlag.value = !tagFlag.value
 }
 // 人物巡检
-const inspection = () => { }
+const inspection = () => {
+
+}
+// 模型高亮
+let outLineFlag = ref(false)
+const highLightModel = () => {
+  eventHub.emit('highLightModel', { type: !outLineFlag.value })
+  outLineFlag.value = !outLineFlag.value
+
+}
+// 排水模拟、冲水模拟
+let waterFlag = ref(false)//false
+const waterSimulation = () => {
+  eventHub.emit('waterSimulation', { type: !waterFlag.value })
+  waterFlag.value = !waterFlag.value
+}
+// 水污染模拟
+let waterPollutionFlag = ref(false)
+const waterPollution = () => {
+  eventHub.emit('waterPollution', { type: !waterPollutionFlag.value })
+  waterPollutionFlag.value = !waterPollutionFlag.value
+
+
+}
 
 // 两边显示隐藏
 let twoSidesFlag = ref(false);
@@ -89,28 +112,19 @@ const toggleTwoSides = () => {
   if (twoSidesFlag.value) {
     leftRef.value.classList.add('expandLeft')
     rightRef.value.classList.add('expandRight')
-
     rightRef.value.classList.contains('shrinkRight') && rightRef.value.classList.remove('shrinkRight')
     leftRef.value.classList.contains('shrinkLeft') && leftRef.value.classList.remove('shrinkLeft')
-
     centerBtnRef.value.classList.add('centerBtnRefExpand')
     centerBtnRef.value.classList.remove('centerBtnRefShrink')
-
-
   } else {
     leftRef.value.classList.add('shrinkLeft')
     rightRef.value.classList.add('shrinkRight')
-
     rightRef.value.classList.contains('expandRight') && rightRef.value.classList.remove('expandRight')
     leftRef.value.classList.contains('expandLeft') && leftRef.value.classList.remove('expandLeft')
-
     centerBtnRef.value.classList.add('centerBtnRefShrink')
     centerBtnRef.value.classList.remove('centerBtnRefExpand')
-
-
   }
   twoSidesFlag.value = !twoSidesFlag.value
-
 }
 
 
@@ -169,11 +183,8 @@ const toggleTwoSides = () => {
 }
 
 .header {
-
-
   width: 19.2rem;
   height: 1rem;
-  /* line-height: 100%; */
   background-image: url(@/assets/titBg.png);
   background-size: cover;
   background-position: center;
@@ -191,9 +202,6 @@ const toggleTwoSides = () => {
 }
 
 .left {
-
-
-  /* width: 20%; */
   width: 400px;
   height: 100%;
   background: rgba(110, 204, 255, 0.1)
@@ -217,17 +225,6 @@ const toggleTwoSides = () => {
 
 
 .right {
-  /* width: 4rem;
-  background-image: url(@/assets/bg/line_img.png);
-  background-repeat: no-repeat;
-  background-size: contain;
-  background-position: left center;
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  padding: 0.4rem 0; */
-
-  /* width: 20%; */
   width: 400px;
   height: 100%;
   background: rgba(110, 204, 255, 0.1)

@@ -18,6 +18,7 @@ const textureCube = textureCubeLoader.load([
 
 scene.background = textureCube;
 scene.environment = textureCube;
+// scene.selectedObjects = []
 
 export default scene;
 
