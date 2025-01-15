@@ -26,10 +26,6 @@ import "@/three/init";
 import createMesh from "@/three/createMesh";
 // 导入每一帧的执行函数
 import animate from "@/three/animate";
-import AlarmSprite from "@/three/mesh/AlarmSprite";
-import LightWall from "@/three/mesh/LightWall";
-import FlyLineShader from "@/three/mesh/FlyLineShader";
-import LightRadar from "@/three/mesh/LightRadar";
 import eventHub from "@/utils/eventHub";
 
 const props = defineProps(["eventList"]);
