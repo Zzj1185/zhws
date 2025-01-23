@@ -2,6 +2,7 @@
   <div class="home">
     <Scene></Scene>
     <BigScreen></BigScreen>
+    <!-- <Progress></Progress> -->
   </div>
 </template>
 
@@ -9,8 +10,9 @@
 // @ is an alias to /src
 import Scene from "@/components/Scene.vue";
 import BigScreen from "@/components/BigScreen.vue";
+import Progress from "@/components/Progress.vue"
 import { onMounted, reactive, ref } from "vue";
-import { getSmartCityInfo, getSmartCityList } from "@/api/api";
 import gsap from "gsap";
 
 </script>
+<style lang="less"></style>

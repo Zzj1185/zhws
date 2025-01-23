@@ -6,11 +6,14 @@ import { MTLLoader } from "three/examples/jsm/loaders/MTLLoader";
 import ElementTag from "./tool/ElementTag"; // Import the ElementTag class
 import { Water } from "three/examples/jsm/objects/Water2";
 import composers from "./composer"
+import controls from "./controls";
 const { composer, outLinePass } = composers
 class createMesh {
   constructor() {
+
     this.mainModel = null;
     this.sonModel = null;
+    this.percent = 0
 
     this.mainModelTags = [];
 
@@ -18,17 +21,18 @@ class createMesh {
 
     this.addLights()
 
-    this.loadModel('./model/wumuObj/石桥铺.mtl', './model/wumuObj/无标题.obj', this.mainModel, (e) => {
-      this.mainModel = e
-      this.mainModel.scale.set(0.02, 0.02, 0.02);
+
+    this.loadModel('./model/wumuObj/石桥铺.mtl', './model/wumuObj/石桥铺.obj', this.mainModel, (e) => {
+      this.mainModel = e;
       this.renderDeviceStauts(e);
       this.hideMainModelTags()
       this.addWater();
 
+
     })
     this.loadModel('./model/zaixianjifangObj/在线机房.mtl', './model/zaixianjifangObj/在线机房.obj', this.sonModel, (e) => {
       this.sonModel = e;
-      this.sonModel.scale.set(0.2, 0.2, 0.2);
+      this.sonModel.scale.set(5, 5, 5);
       this.sonModel.visible = false;
     })
 
@@ -42,9 +46,7 @@ class createMesh {
   }
 
   addOutLine(modelName = this.mainModel) {
-    // 辉光
-    let test2 = modelName.getObjectByName('test2')
-    outLinePass.selectedObjects.push(test2)
+
 
 
 
@@ -56,12 +58,8 @@ class createMesh {
 
   // 加载设备状态
   renderDeviceStauts(modelName = this.mainModel) {
-
-
-
     modelName.traverse((child) => {
       if (child.isMesh) {
-
         if (child.material.name === 'Material__809') {//Material__1134
           child.material = new THREE.MeshBasicMaterial({
             color: 0x00beff,
@@ -73,7 +71,7 @@ class createMesh {
           const elementTag = new ElementTag(child);
           this.mainModelTags.push(elementTag.getCSS2DObject());
           modelName.add(elementTag.getCSS2DObject());
-
+          outLinePass.selectedObjects.push(child)
 
 
         }
@@ -84,6 +82,11 @@ class createMesh {
               child.material = material
             }
             if (child.material.name === 'Material__1134') {//Material__1134
+              const material = new THREE.MeshStandardMaterial({ color: 0x00ff00 });
+              child.material = material
+            }
+
+            if (child.name == 'pool') {
               const material = new THREE.MeshStandardMaterial({ color: 0x00ff00 });
               child.material = material
             }
@@ -98,7 +101,7 @@ class createMesh {
 
   addWater() {
     // 创建水面 
-    const waterGeometry = new THREE.PlaneGeometry(14, 8);
+    const waterGeometry = new THREE.PlaneGeometry(700, 400);
     const water = new Water(waterGeometry, {
       // textureWidth: 512,
       // textureHeight: 512,
@@ -116,7 +119,7 @@ class createMesh {
       fog: scene.fog !== undefined,
     })
     water.rotation.x = -Math.PI / 2;
-    water.position.set(1, 2, 4); // 设置水面位置
+    water.position.set(55, 100, 200); // 设置水面位置
     this.waterGroups.push(water)
     scene.add(water);
   }
@@ -130,6 +133,10 @@ class createMesh {
 
       objLoader.setMaterials(materials);
 
+      const progressDiv = document.getElementsByClassName('ant-progress-bg')[0];
+      // 进度条文字百分比元素
+      const progressText = document.getElementsByClassName('ant-progress-text')[0];
+
       // 监听加载进度
       objLoader.load(objSrc,
         (object) => {
@@ -142,9 +149,31 @@ class createMesh {
           }
         },
         (xhr) => {
-          // 计算进度并输出
-          const progress = (xhr.loaded / xhr.total) * 100;
-          // console.log(`模型加载进度: ${progress.toFixed(2)}%`, mtlSrc);
+          // 进度条元素
+
+
+          // // 模型加载百分比进度
+          // const percent = ((xhr.loaded / xhr.total) * 100).toFixed(1);
+          // console.log(percent, "percent");
+          // // 设置加载进度(由于进度条动画存在一定延迟，所以在基础上加一点)
+          // // progressDiv.style.width = (percent - '') + 6 + '%';
+          // progressDiv.style.width = percent + '%';
+
+
+
+          // // 告诉用户加载进度百分比
+          // progressText.innerText = `模型加载中${percent}%`;
+          // console.log(progressText);
+
+
+          // if (percent == '100.0') {
+          //   setTimeout(() => {
+          //     // 隐藏进度条
+          //     document.getElementsByClassName('progress')[0].style.display = 'none';
+          //   }, 2000);
+          // }
+
+
         },
         (error) => {
           console.error('加载模型时出错:', error, mtlSrc);
@@ -213,6 +242,39 @@ class createMesh {
             callback(clickedObject); // 传递被点击的对象
           }
         }
+      }
+    });
+    window.addEventListener('click', (event) => {
+      const raycaster = new THREE.Raycaster();
+      const mouse = new THREE.Vector2();
+      mouse.x = (event.clientX / window.innerWidth) * 2 - 1;
+      mouse.y = -(event.clientY / window.innerHeight) * 2 + 1;
+      raycaster.setFromCamera(mouse, camera);
+      const intersects = raycaster.intersectObjects(scene.children, true);
+      if (intersects.length > 0) {
+        const intersectedObject = intersects[0].object;
+        console.log(intersectedObject);
+        // console.log('模型名称:', intersectedObject.name);
+        // console.log('模型位置:', intersectedObject.position);
+        // console.log('相机getWorldDirection:', camera, camera.getWorldDirection(new THREE.Vector3()));
+        // console.log('相机getWorldPosition:', camera, camera.getWorldPosition(new THREE.Vector3()));
+        // console.log('相机getWorldScale:', camera, camera.getWorldScale(new THREE.Vector3()));
+        // console.log('相机getWorldRotation:', camera, camera.getWorldQuaternion(new THREE.Euler()));
+
+        // console.log('控制器:', controls.target);
+        // console.log('控制器:', controls.getDistance());
+
+
+        // const clickedObject = intersects[0].object;
+        // if (clickedObject.name === clickedObject.name) {
+
+        //   that.hideMainModel();
+        //   that.showSonModel()// 调用回调函数
+
+        //   if (callback && typeof callback === 'function') {
+        //     callback(clickedObject); // 传递被点击的对象
+        //   }
+        // }
       }
     });
   }

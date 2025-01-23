@@ -12,7 +12,6 @@
             <div @click="changeView('inital')" class="changeView">
               初始视角
             </div>
-
             <div @click="changeView('lblc')" class="changeView">
               滤布滤池
             </div>
@@ -20,8 +19,8 @@
               全景漫游
             </div>
             <div @click="togglePanel" class="changeView">{{ tagFlag ? '隐藏数据' : '显示数据' }}</div>
-            <!-- <div @click="inspection" class="changeView">人物巡检</div> -->
-            <div @click="highLightModel" class="changeView">{{ outLineFlag ? '取消报警' : '报警模拟' }}</div>
+            <div @click="inspection" class="changeView">人物巡检</div>
+            <!-- <div @click="highLightModel" class="changeView">{{ outLineFlag ? '取消报警' : '报警模拟' }}</div> -->
             <div @click="waterSimulation" class="changeView">
               {{ waterFlag ? '充水模拟' : '排水模拟' }}
             </div>
@@ -78,6 +77,7 @@ const togglePanel = () => {
 }
 // 人物巡检
 const inspection = () => {
+  eventHub.emit('inspection')
 
 }
 // 模型高亮

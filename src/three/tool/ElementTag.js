@@ -6,7 +6,10 @@ class ElementTag {
         this.object3d = object3d;
         this.element = this.createElement();
         this.css2dObject = new CSS2DObject(this.element);
-        this.css2dObject.position.copy(this.object3d.position);
+        // this.css2dObject.position.copy(this.object3d.position);
+        this.css2dObject.position.copy(new THREE.Vector3(-704, 131, 404));//暂时写死，因为模型位置都是0,0,0
+
+
     }
 
     createElement() {
@@ -14,7 +17,7 @@ class ElementTag {
         element.className = "elementTag";
         element.innerHTML = `
       <div class="elementContent">
-        <p>状态：开启</p>
+        <p>PH:5.5</p>
       </div>
     `;
         return element;

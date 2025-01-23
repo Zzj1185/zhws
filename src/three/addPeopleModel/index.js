@@ -1,19 +1,23 @@
 // 引入Three.js
 import * as THREE from 'three';
 // 引入gltf模型加载库GLTFLoader.js
-import { GLTFLoader } from 'three/addons/loaders/GLTFLoader.js';
+import { GLTFLoader } from 'three/examples/jsm/loaders/GLTFLoader';
+// import { GLTFLoader } from 'three/addons/loaders/GLTFLoader.js';
 // 人物步行动作
 let WalkAction = null;
 // 加载人物模型
-async function addPeopleModel () {
+async function addPeopleModel() {
     // 创建gltf模型加载器
     const gltfLoader = new GLTFLoader();
-    const gltf = await gltfLoader.loadAsync("./worker.glb");
+    const gltf = await gltfLoader.loadAsync("./model/worker.glb");
     return new Promise(resolve => {
         // 创建人物模型组对象
         const peopleGroup = new THREE.Group();
         peopleGroup.name = '人物模型组对象';
-        gltf.scene.scale.set(0.6, 0.6, 0.6);
+        gltf.scene.scale.set(50, 50, 50);
+        gltf.scene.position.set(-500, 0, 500);
+        // 旋转人物模型
+        gltf.scene.rotateY(Math.PI / 2); // 90度转换为弧度
         // 开启人物模型产生阴影和接收阴影
         gltf.scene.children[0].children.map(obj => {
             obj.castShadow = true;
