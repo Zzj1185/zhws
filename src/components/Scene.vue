@@ -77,9 +77,9 @@ eventHub.on('changeView', (e) => {
 
   if (e.type === 'lblc') {
     gsap.to(camera.position, {
-      x: -1500,
-      y: 400,
-      z: 0,
+      x: -247,
+      y: 340,
+      z: -828,
       duration: 2,
       onStart: () => {
         controls.enabled = false;
