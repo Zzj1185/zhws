@@ -10,9 +10,7 @@ class ModelLoader {
     }
 
     loadModel(mtlPath, objPath, scale = 1, position = new THREE.Vector3(0, 0, 0), onLoadCallback) {
-
         const mtlLoader = new MTLLoader();
-
         mtlLoader.load(mtlPath, (materials) => {
             materials.preload();
             const objLoader = new OBJLoader();

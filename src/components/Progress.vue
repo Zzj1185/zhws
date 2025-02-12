@@ -1,8 +1,11 @@
 <template>
-    <a-progress :stroke-color="{
-        from: '#00F5FF',
-        to: '#4169E1',
-    }" :percent="0" trailColor="#E8E8E8" status="active" class="progress" />
+    <div class="progress-circle-container">
+        <div class="progress-img-outer">
+            <div class="progress-img-inner"></div>
+
+        </div>
+        <span class="progress-loading">0%</span>
+    </div>
 </template>
 
 <script>
@@ -12,42 +15,65 @@ export default {
 </script>
 
 <style lang="less">
-.progress {
+.progress-circle-container {
     position: absolute;
-    top: calc(100vh / 2 - 15px);
-    left: 27.5vw;
-    width: 45vw;
+    top: 0;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    width: 100%;
+    height: 100%;
     display: flex;
-    flex-wrap: nowrap;
+    justify-content: center;
     align-items: center;
-    z-index: 999;
+}
 
-    .ant-progress-bg,
-    .ant-progress-inner,
-    .ant-progress-outer {
-        height: 5vh !important;
+.progress-img-outer {
+    margin: 0px auto;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 398px;
+    height: 396px;
+    background-image: url(@/assets/processOuter.png);
+    animation: 5s linear 0s infinite normal none running outer;
+}
 
+.progress-img-inner {
+    width: 347px;
+    height: 353px;
+    background-image: url(@/assets/processInner.png);
+    animation: 5s linear 0s infinite normal none running inner;
+}
+
+.progress-loading {
+    color: rgb(255, 255, 255);
+    font-size: 45px;
+    font-style: italic;
+    position: absolute;
+}
+
+@keyframes outer {
+    0% {
+        transform: rotate(0deg);
+        transform-origin: center center;
     }
 
-    .ant-progress-inner {
-        box-shadow: 0 0 0.1vw 0.3vh #1890ff;
-    }
-
-    .ant-progress-text {
-        font-family: "Times New Roman", Times, serif;
-        font-weight: 600;
-        letter-spacing: 0.3vw !important;
-        font-size: 1.2vw !important;
+    100% {
+        transform: rotate(1turn);
+        transform-origin: center center;
     }
 }
 
-.ant-progress-text {
-    width: 100% !important;
-    display: flex !important;
-    align-items: center;
-    justify-content: center;
-    position: absolute !important;
-    z-index: 99 !important;
-    color: #363636 !important;
+@keyframes inner {
+    0% {
+        transform: rotate(1turn);
+        transform-origin: center center;
+    }
+
+    100% {
+        transform: rotate(-1turn);
+        transform-origin: center center;
+    }
 }
 </style>

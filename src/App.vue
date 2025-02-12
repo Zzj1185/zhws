@@ -47,4 +47,26 @@
   margin: 5px 0;
   color: #efefef;
 }
+
+#buildLabel {
+  background: url("./assets/buildLabel.png");
+  background-size: 100% 100%;
+  width: 8vw;
+  height: 5vh;
+  position: absolute;
+  top: -1vw;
+  left: 3vw;
+  // z-index: 0;s
+
+  .name {
+    width: 5vw;
+    text-align: center;
+    line-height: 4.5vh;
+    margin-left: 2.5vw;
+    font-size: 0.7vw;
+    font-family: Noto Sans S Chinese;
+    font-weight: 500;
+    color: #ffffff;
+  }
+}
 </style>

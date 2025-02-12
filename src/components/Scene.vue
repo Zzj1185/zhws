@@ -1,5 +1,5 @@
 <template>
-  <div>
+  <div class="sceneBox">
     <div class="scene" ref="sceneDiv"></div>
 
   </div>
@@ -8,7 +8,6 @@
 </template>
 
 <script setup>
-
 import { onMounted, ref, watch } from "vue";
 import * as THREE from "three";
 import gsap from "gsap";
@@ -51,9 +50,14 @@ createmesh.setupEventListeners((clickedObject) => {
   eventHub.emit("dblClickModel");
 });
 eventHub.on('dblClickModel', (e) => {
+  console.log(createmesh, "createmesh dblClickModel");
   if (e) {
     createmesh.hideSonModel();
     createmesh.showMainModel();
+
+  } else {
+    createmesh.showSonModel()
+    createmesh.hideMainModel();
 
   }
 })
@@ -137,49 +141,6 @@ eventHub.on('changeView', (e) => {
 });
 
 // 人物巡检
-// eventHub.on('inspection', (e) => {
-//   // 创建gltf模型加载器
-//   const gltfLoader = new GLTFLoader();
-//   gltfLoader.loadAsync("./model/worker.glb").then(gltf => {
-//     gltf.scene.name = '人物模型';
-//     gltf.scene.scale.set(50, 50, 50);
-//     gltf.scene.position.set(-500, 0, 500);
-//     // 旋转人物模型
-//     gltf.scene.rotateY(Math.PI / 2); // 90度转换为弧度
-//     scene.add(gltf.scene);
-//     camera.position.copy(gltf.scene.getWorldPosition(new THREE.Vector3())).add(new THREE.Vector3(-300, 120, 0))
-//     camera.lookAt(gltf.scene.position.x, 120, gltf.scene.position.z)
-//     controls.target.set(gltf.scene.position.x, 120, gltf.scene.position.z);
-//     controls.update();
-//     gsap.to(gltf.scene.position, {
-//       x: 500,
-//       y: 0,
-//       z: 500,
-//       duration: 5,
-//       delay: 2,
-//       onComplete: () => {
-//         controls.enabled = true;
-//         scene.remove(gltf.scene);
-//         camera.lookAt(0, 0, 0)
-//         //  还原相机
-//         camera.position.set(1000, 1000, 1000);
-//         controls.target.set(0, 0, 0)
-//       },
-//       onUpdate: () => {
-//         camera.position.copy(gltf.scene.getWorldPosition(new THREE.Vector3())).add(new THREE.Vector3(-300, 120, 0));
-//         camera.lookAt(gltf.scene.position.x, 120, gltf.scene.position.z)
-//         controls.target.set(gltf.scene.position.x, 120, gltf.scene.position.z);
-//         controls.update()
-//       },
-//       onStart: () => {
-//         controls.enabled = false;
-//       },
-
-//     });
-
-//   })
-
-// });
 eventHub.on('inspection', (e) => {
   // 创建gltf模型加载器
   const gltfLoader = new GLTFLoader();
@@ -379,5 +340,9 @@ eventHub.on('highLightModel', (e) => {
   z-index: 100;
   left: 0;
   top: 0;
+}
+
+.sceneBox {
+  border: 1px solid red;
 }
 </style>

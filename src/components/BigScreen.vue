@@ -1,7 +1,10 @@
 <template>
   <div id="bigScreen">
+
+
     <div class="header">污水处理厂智慧监管平台</div>
     <div class="main">
+      <Progress></Progress>
       <div class="left" ref="leftRef">
 
       </div>
@@ -37,7 +40,6 @@
         </div>
       </div>
       <div class="right" ref="rightRef">
-
       </div>
     </div>
   </div>
@@ -46,6 +48,8 @@
 <script setup>
 import eventHub from "@/utils/eventHub";
 import { ref } from "vue";
+import Progress from "@/components/Progress.vue"
+
 
 
 let mainModelFlag = ref(true)
