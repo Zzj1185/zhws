@@ -157,13 +157,30 @@ eventHub.on('inspection', (e) => {
     controls.target.set(gltf.scene.position.x, 120, gltf.scene.position.z);
     controls.update();
 
+
+    //包含关键帧动画的模型作为参数创建一个播放器
+    const mixer = new THREE.AnimationMixer(gltf.scene);
+    //  获取gltf.animations[0]的第一个clip动画对象
+    const clipAction = mixer.clipAction(gltf.animations[0]);
+    clipAction.play();
+
+    const clock = new THREE.Clock();
+    function loop() {
+      requestAnimationFrame(loop);
+      const frameT = clock.getDelta();
+      // 更新播放器相关的时间
+      mixer.update(frameT);
+    }
+    loop();
+
+
     // 直线路径动画
     gsap.to(gltf.scene.position, {
       x: 600,   // 直线终点
       y: 0,
       z: 500,
       duration: 5,
-      delay: 2,
+      delay: 0.5,
       onComplete: () => {
         // 转弯后的动画
         gsap.to(gltf.scene.rotation, {
@@ -340,9 +357,5 @@ eventHub.on('highLightModel', (e) => {
   z-index: 100;
   left: 0;
   top: 0;
-}
-
-.sceneBox {
-  border: 1px solid red;
 }
 </style>
